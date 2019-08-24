@@ -142,9 +142,9 @@ void			*render(void *info)
 		{
 			line_end = HEIGHT;
 		}
-		line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, 0, 0}, 0xC9C9C9); // Figure out why -1 works but 0 doesn't
+		line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, 0, 0}, SKY_COLOR);
 		line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, line_end, 0}, shader(perp_wall_dist, WALL_COLOR));
-		line(w->image, (t_xyz){x, line_end, 0}, (t_xyz){x, HEIGHT, 0}, 0x999999);
+		line(w->image, (t_xyz){x, line_end, 0}, (t_xyz){x, HEIGHT, 0}, FLOOR_COLOR);
 		x += NUMBER_OF_THREADS;
 	}
 	return (NULL);
