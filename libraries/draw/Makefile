@@ -6,33 +6,41 @@
 #    By: csinglet <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/22 18:59:57 by csinglet          #+#    #+#              #
-#    Updated: 2019/02/02 15:45:29 by csinglet         ###   ########.fr        #
+#    Updated: 2018/11/09 23:25:49 by csinglet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	= libftstructs.a
+NAME			= libdraw.a
 
-CC		= gcc
-CFLAGS	= -Wall -Werror -Wextra -O3
-FLAGS	= $(CFLAGS)
+CC				= gcc
+CFLAGS			= -Wall -Werror -Wextra -O3
+FLAGS			= $(CFLAGS)
 
-FILES	= queue.c stack.c hash_table.c btree.c
+FILES			= circle.c image.c line.c matrix.c rotation.c vector.c
 
-OBJ	= $(addprefix build/, $(FILES:.c=.o))
+SRC				= $(addprefix sources/, $(FILES))
+OBJ				= $(addprefix build/, $(FILES:.c=.o))
 
 all: $(NAME)
 
+ft:
+	@make -C libft
+	@make re
+
+test:
+	@$(CC) $(FLAGS) main.c libftprintf.a $(NAME) -o printf -I includes
+
 $(NAME): $(OBJ)
 	@echo "Creating archive: $(NAME)"
-	@ar rc $(NAME) $(OBJ)
+	@ar rcs $(NAME) $(OBJ)
 
 build:
 	@echo "Creating build directory"
 	@mkdir build
 
-build/%.o: srcs/%.c | build
+build/%.o: sources/%.c | build
 	@echo "  Building $@"
-	@$(CC) $(INC_FT) $(INC_PF) -I includes -c $< -o $@
+	@$(CC) $(FLAGS) -I includes -c $< -o $@
 
 clean:
 	@rm -fr build

@@ -12,7 +12,7 @@
 
 #include "draw.h"
 
-t_image         *new_image(void *mlx, void *window, int width, int height)
+t_image         *new_image(void *mlx, int width, int height)
 {
     t_image     *i;
 

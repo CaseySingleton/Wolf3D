@@ -6,13 +6,11 @@
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 13:41:42 by csinglet          #+#    #+#             */
-/*   Updated: 2019/02/27 13:41:42 by csinglet         ###   ########.fr       */
+/*   Updated: 2019/07/13 15:44:08 by csinglet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Wolf3D.h"
-
-// (*f)(t_list *elem)
 
 static void	add_if_within_bounds(t_xyz *v1, t_xyz *v2, float add_x, float add_y)
 {
@@ -52,32 +50,53 @@ int			handle_input(t_wolf *w)
 		ft_printf("Exiting Wolf3D\n");
 		exit(0);
 	}
-	if ((k[KEY_W] && (w->player->can_move & (1 << 1))) || (k[KEY_S] && (w->player->can_move & (1 << 3))))
+	if (k[KEY_W] || k[KEY_S]) // Left off here
 	{
-		float move_x = ((k[KEY_S]) ? cos(w->player->angle) : -cos(w->player->angle)) * 1.5f;
-		float move_y = ((k[KEY_S]) ? sin(w->player->angle) : -sin(w->player->angle)) * 1.5f;
-		temp = w->objects;
-		while (temp != NULL)
+		float	move_x = w->player->direction.x * 0.1;
+		float	move_y = w->player->direction.y * 0.1;
+
+		move_x *= ((k[KEY_W]) ? 1 : -1);
+		move_y *= ((k[KEY_W]) ? 1 : -1);
+		move_x += w->player->where.x;
+		move_y += w->player->where.y;
+		if (w->map->info[(int)w->player->where.y][(int)move_x] == 0)
 		{
-			temp->line.p1.x += move_x;
-			temp->line.p1.y += move_y;
-			temp->line.p2.x += move_x;
-			temp->line.p2.y += move_y;
-			temp = temp->next;
+			w->player->where.x = move_x;
+		}
+		if (w->map->info[(int)move_y][(int)w->player->where.x] == 0)
+		{
+			w->player->where.y = move_y;
 		}
 	}
 	if (k[KEY_A] || k[KEY_D])
 	{
-		ft_printf("Rotation start\n");
-		float angle = (k[KEY_A]) ? 0.025f : - 0.025f;
-		temp = w->objects;
-		while (temp != NULL)
+		float	old_direction = w->player->direction.x;
+		float	old_plane = w->player->camera.x;
+		float	rotation = M_PI / 50;
+	
+		rotation *= (k[KEY_A]) ? 1 : -1;
+		w->player->direction.x = old_direction * cos(rotation) - w->player->direction.y * sin(rotation);
+		w->player->direction.y = old_direction * sin(rotation) + w->player->direction.y * cos(rotation);
+		w->player->camera.x = old_plane * cos(rotation) - w->player->camera.y * sin(rotation);
+		w->player->camera.y = old_plane * sin(rotation) + w->player->camera.y * cos(rotation);
+	}
+	if (k[KEY_Q] || k[KEY_E])
+	{
+		float	move_x = w->player->direction.y * 0.1;
+		float	move_y = w->player->direction.x * 0.1;
+
+		move_x *= ((k[KEY_Q]) ? -1 : 1);
+		move_y *= ((k[KEY_Q]) ? 1 : -1);
+		move_x += w->player->where.x;
+		move_y += w->player->where.y;
+		if (w->map->info[(int)w->player->where.y][(int)move_x] == 0)
 		{
-			vector_rotate_around_p2(&(temp->line.p1), w->player->where, angle);
-			vector_rotate_around_p2(&(temp->line.p2), w->player->where, angle);
-			temp = temp->next;
+			w->player->where.x = move_x;
 		}
-		ft_printf("Rotation end\n");
+		if (w->map->info[(int)move_y][(int)w->player->where.x] == 0)
+		{
+			w->player->where.y = move_y;
+		}
 	}
 	return (0);
 }

@@ -99,9 +99,11 @@ OBJ			= $(addprefix build/, $(FILES:.c=.o))
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@ar rcs $@ $(OBJ)
+	@echo "Creating archive: $(NAME)"
+	@ar rcs $(NAME) $(OBJ)
 
 build:
+	@echo "Creating build directory"
 	mkdir build
 
 build/%.o: srcs/%.c | build

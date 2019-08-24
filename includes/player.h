@@ -20,7 +20,7 @@ typedef struct      s_player
     t_xyz			where;
 	t_xyz			direction;
 	t_xyz			camera;
-	uint8_t			can_move;
+	int				vertical_offset;
 	float			angle;
 	int				options;
 }                   t_player;

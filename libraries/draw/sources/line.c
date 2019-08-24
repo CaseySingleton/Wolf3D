@@ -16,9 +16,7 @@ void			pixel(t_image *image, int x, int y, int color)
 {
 	int			location;
 
-	if (x <= 0 || x >= image->width || y <= 0 || y >= image->height)
-		return ;
-	location = x + (y * image->width) - 1;
+	location = x + (y * image->width);
 	if (location < image->width * image->height)
 		image->buffer[location] = color;
 }
@@ -49,7 +47,7 @@ void			line(t_image *image, t_xyz p1, t_xyz p2, int color)
 	line.diff_y = p2.y - p1.y;
 	line.diff_z = p2.z - p1.z;
 	line.slope = fabs(line.diff_y / line.diff_x);
-	line.error = -1;
+	line.error = -1.0f;
 	while ((int)p1.x != (int)p2.x)
 	{
 		pixel(image, swap ? p1.y : p1.x, swap ? p1.x : p1.y, color);
@@ -62,10 +60,14 @@ void			line(t_image *image, t_xyz p1, t_xyz p2, int color)
 		p1.z += line.diff_z / fabs(line.diff_x);
 		p1.x += (p1.x > p2.x) ? -1 : 1;
 	}
+	pixel(image, swap ? p1.y : p1.x, swap ? p1.x : p1.y, color);
 }
+
+#include <stdio.h>
 
 void			lline(t_image *image, t_line l, int color)
 {
+	// printf("%f %f %f %f\n", l.p1.x, l.p1.y, l.p2.x, l.p2.y);
 	t_bresline	line;
 	int			swap;
 
@@ -74,12 +76,12 @@ void			lline(t_image *image, t_line l, int color)
 	line.diff_y = l.p2.y - l.p1.y;
 	line.diff_z = l.p2.z - l.p1.z;
 	line.slope = fabs(line.diff_y / line.diff_x);
-	line.error = -1;
-	while ((int)l.p1.x != (int)l.p2.x)
+	line.error = -1.0f;
+	while (floor(l.p1.x) != floor(l.p2.x))
 	{
 		pixel(image, swap ? l.p1.y : l.p1.x, swap ? l.p1.x : l.p1.y, color);
 		line.error += line.slope;
-		if ((int)line.error >= 0)
+		if (floor(line.error) >= 0)
 		{
 			l.p1.y += (l.p1.y > l.p2.y) ? -1 : 1;
 			line.error -= 1;

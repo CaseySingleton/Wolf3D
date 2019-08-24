@@ -13,10 +13,10 @@
 NAME		= Wolf3D
 
 CC			= gcc
-CFLAGS		= -Wall -Werror -Wextra -O3
+CFLAGS		= -Wall -Werror -Wextra -O3 -lpthread
 FLAGS		= $(CFLAGS)
 
-FILES		= main.c map.c ray_marching.c line.c circle.c image.c rotation.c matrix.c vector.c input.c
+FILES		= main.c player.c map.c input.c
 
 FRAMEWORKS	= -framework OpenGL -framework Appkit
 
@@ -24,61 +24,53 @@ ALL_FILES	= $(FILES) $(LX_FILES) $(CLINE_FILES) $(GLOB_FILES)
 
 OBJ			= $(addprefix build/, $(ALL_FILES:.c=.o))
 
-INC_FT		= -I srcs/libft/includes
-LINK_FT		= -L srcs/libft -lft
+INC_FT		= -I libraries/libft/includes
+LINK_FT		= -L libraries/libft -lft
 FT			= $(INC_FT) $(LINK_FT)
 
-INC_PF		= -I srcs/ft_printf/includes
-LINK_PF		= -L srcs/ft_printf -lftprintf
+INC_PF		= -I libraries/ft_printf/includes
+LINK_PF		= -L libraries/ft_printf -lftprintf
 PF			= $(INC_PF) $(LINK_PF)
 
-INC_ST		= -I srcs/ft_structs/includes
-LINK_ST		= -L srcs/ft_structs -lftstructs
-ST			= $(INC_ST) $(LINK_ST)
-
-INC_MLX		= -I srcs/minilibx
-LINK_MLX	= -L srcs/minilibx -lmlx
+INC_MLX		= -I libraries/minilibx
+LINK_MLX	= -L libraries/minilibx -lmlx
 MLX			= $(INC_MLX) $(LINK_MLX)
 
-# INC_GFX		= -I srcs/libgfx/includes
-# LINK_GFX	= -L srcs/libgfx -lgfx
-# GFX			= $(INC_GFX) $(LINK_GFX)
+INC_DRAW	= -I libraries/draw/includes
+LINK_DRAW	= -L libraries/draw -ldraw
+DRAW		= $(INC_DRAW) $(LINK_DRAW)
 
-LIBS		= $(FT) $(PF) $(ST) $(MLX) # $(GFX)
-INC_LIBS	= $(INC_FT) $(INC_PF) $(INC_ST) $(INC_LX) $(INC_MLX) # $(INC_GFX)
+LIBS		= $(FT) $(PF) $(MLX) $(DRAW)
+INC_LIBS	= $(INC_FT) $(INC_PF) $(INC_MLX) $(INC_DRAW)
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@echo "Creating libmlx.a"
-	@make -C srcs/minilibx
-	@echo "Creating libft.a"
-	@make -C srcs/libft
-	@echo "Creating libftprintf.a"
-	@make -C srcs/ft_printf
-	@echo "Creating libftstructs.a"
-	@make -C srcs/ft_structs
+	@make -C libraries/minilibx
+	@make -C libraries/draw
+	@make -C libraries/libft
+	@make -C libraries/ft_printf
 	@echo "Creating: $(NAME)"
-	@$(CC) $(FLAGS) $(LIBS) $(FRAMEWORKS) -I includes $(OBJ) -o $@ -ltermcap
+	@$(CC) $(FLAGS) $(LIBS) $(FRAMEWORKS) -I includes $(OBJ) -o $@
 
 build:
 	@echo "Creating build directory"
 	@mkdir build
 
-build/%.o: srcs/*/%.c | build
+build/%.o: sources/%.c | build
 	@echo "  Building $@"
 	@$(CC) $(INC_LIBS) -I includes -c $< -o $@
 
 clean:
 	@rm -fr build
-	@make clean -C srcs/libft
-	@make clean -C srcs/ft_printf
-	@make clean -C srcs/ft_structs
+	@make clean -C libraries/libft
+	@make clean -C libraries/ft_printf
+	@make clean -C libraries/draw
 
 fclean: clean
 	@rm -f $(NAME)
-	@make fclean -C srcs/libft
-	@make fclean -C srcs/ft_printf
-	@make fclean -C srcs/ft_structs
+	@make fclean -C libraries/libft
+	@make fclean -C libraries/ft_printf
+	@make fclean -C libraries/draw
 
 re: fclean all

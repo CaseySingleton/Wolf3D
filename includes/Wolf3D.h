@@ -20,7 +20,6 @@
 # include "libft.h"
 # include "get_next_line.h"
 # include "ft_printf.h"
-# include "ft_structs.h"
 # include "draw.h"
 # include "player.h"
 # include "map.h"
@@ -28,10 +27,11 @@
 # include "mlx.h"
 # include "mlx_keys.h"
 
-# define WIDTH	800
-# define HEIGHT	600
+# define WIDTH	1600
+# define HEIGHT	900
 # define CENTER_X WIDTH / 2
 # define CENTER_Y HEIGHT / 2
+# define WALL_COLOR 0xA3F4FF
 
 typedef struct		s_object
 {
@@ -49,6 +49,12 @@ typedef struct		s_wolf
 	t_object		*objects;
 }					t_wolf;
 
+typedef struct		s_thread
+{
+	t_wolf			*w;
+	int				x;
+}					t_thread;
+
 /*
 **	input.c
 */
@@ -61,6 +67,6 @@ int					mouse_motion(int x, int y, t_wolf *w);
 **	ray_marching.c
 */
 
-float				ray_march(t_wolf *w, t_xyz point, float angle, int color);
+// float				ray_march(t_wolf *w, t_xyz point, float angle, int color);
 
 #endif

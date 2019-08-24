@@ -15,7 +15,10 @@
 
 # include <stdlib.h>
 # include <math.h>
+# include <pthread.h>
 # include "mlx.h"
+
+# define NUMBER_OF_THREADS 100
 
 # define MIN(a, b) ((a < b) ? a : b)
 # define MAX(a, b) ((a > b) ? a : b)
@@ -105,7 +108,7 @@ void				ccircle(t_image *image, t_circle c, int color);
 **	image.c
 */
 
-t_image				*new_image(void *mlx, void *window, int width, int height);
+t_image				*new_image(void *mlx, int width, int height);
 
 /*
 **	rotation.c
