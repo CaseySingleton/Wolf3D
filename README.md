@@ -1,5 +1,5 @@
 # Wolf3D
-Wolf 3D made using C and Ray Casting for rendering
+Wolf 3D made using C and Ray Casting for rendering.
 
 Still in progress.
 
