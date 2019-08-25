@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME		= Wolf3D
+NAME		= wolf3D
 
 CC			= gcc
 CFLAGS		= -Wall -Werror -Wextra -O3 -lpthread

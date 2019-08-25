@@ -35,7 +35,7 @@ int				shader(float distance, int color)
 	r = ((color >> 2 * 8) & 0xFF);
 	g = ((color >> 1 * 8) & 0xFF);
 	b = ((color >> 0 * 8) & 0xFF);
-	distance *= 10;
+	distance *= 6;
 	if (r > (int)((r / 0xFF) * distance))
 		new_color |= (r - (int)((r / (float)0xFF) * distance)) << 2 * 8;
 	if (g > (int)((g / 0xFF) * distance))
@@ -116,7 +116,6 @@ void			*render(void *info)
 				map_y += step_y;
 				side = 1;
 			}
-			// Check if ray has hit a wall
 			if (w->map->info[map_y][map_x] > 0)
 			{
 				hit = 1;
@@ -143,7 +142,7 @@ void			*render(void *info)
 			line_end = HEIGHT;
 		}
 		line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, 0, 0}, SKY_COLOR);
-		line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, line_end, 0}, shader(perp_wall_dist, WALL_COLOR));
+		line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, line_end, 0}, shader(perp_wall_dist, WALL_COLOR_1));
 		line(w->image, (t_xyz){x, line_end, 0}, (t_xyz){x, HEIGHT, 0}, FLOOR_COLOR);
 		x += NUMBER_OF_THREADS;
 	}
@@ -167,6 +166,7 @@ int				draw_loop(t_wolf *w)
 		if (pthread_create(&threads[i], NULL, render, &params[i]) != 0)
 		{
 			ft_printf("Error\n");
+			return (1);
 		}
 	}
 	i = -1;
@@ -229,7 +229,7 @@ void			start(char *file_path)
 	w.image = new_image(w.gfx->mlx_ptr, WIDTH, HEIGHT);
 
 	player_init(&player);
-	// set_player_position(&player, &map);
+	set_player_position(&player, &map);
 	w.player = &player;
 
 	set_hooks(&w);

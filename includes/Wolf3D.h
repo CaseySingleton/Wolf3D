@@ -29,12 +29,14 @@
 
 # define WIDTH	1600
 # define HEIGHT	900
+# define MINI_MAP_SIZE WIDTH / 6
 # define CENTER_X WIDTH / 2
 # define CENTER_Y HEIGHT / 2
 
 # define SKY_COLOR 0xBDFCFF
-# define WALL_COLOR 0xA3F4FF
-# define FLOOR_COLOR 0x6E6E6E
+# define WALL_COLOR_1 0xFFE6BE
+# define WALL_COLOR_2 0xBAFFDB
+# define FLOOR_COLOR 0x918D87
 
 typedef struct		s_object
 {
