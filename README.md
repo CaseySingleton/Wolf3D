@@ -3,4 +3,4 @@ Wolf 3D in C made by me
 
 Still in progress.
 
-- [Something!](https://i.imgur.com/EBFG0AQ.png?2)
+![](https://i.imgur.com/EBFG0AQ.png?2)
