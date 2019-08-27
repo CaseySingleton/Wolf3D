@@ -35,7 +35,7 @@ int				shader(float distance, int color)
 	r = ((color >> 2 * 8) & 0xFF);
 	g = ((color >> 1 * 8) & 0xFF);
 	b = ((color >> 0 * 8) & 0xFF);
-	distance *= 6;
+	distance *= 7;
 	if (r > (int)((r / 0xFF) * distance))
 		new_color |= (r - (int)((r / (float)0xFF) * distance)) << 2 * 8;
 	if (g > (int)((g / 0xFF) * distance))
@@ -116,6 +116,7 @@ void			*render(void *info)
 				map_y += step_y;
 				side = 1;
 			}
+			// Check if ray has hit a wall
 			if (w->map->info[map_y][map_x] > 0)
 			{
 				hit = 1;
@@ -141,9 +142,27 @@ void			*render(void *info)
 		{
 			line_end = HEIGHT;
 		}
-		line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, 0, 0}, SKY_COLOR);
-		line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, line_end, 0}, shader(perp_wall_dist, WALL_COLOR_1));
-		line(w->image, (t_xyz){x, line_end, 0}, (t_xyz){x, HEIGHT, 0}, FLOOR_COLOR);
+		line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, 0, 0}, 0x444444);
+		// line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, line_end, 0}, shader(perp_wall_dist, WALL_COLOR));
+		line(w->image, (t_xyz){x, line_end, 0}, (t_xyz){x, HEIGHT, 0}, 0x2b2b2b);
+		float	wall_x;
+		if (side == 0)
+			wall_x = w->player->where.y + perp_wall_dist * ray_dir_y;
+		else
+			wall_x = w->player->where.x + perp_wall_dist * ray_dir_x;
+		wall_x -= floor(wall_x);
+		int		tex_x = wall_x * 32;
+		if ((side == 0 && ray_dir_x > 0) || (side == 1 && ray_dir_y < 0))
+			tex_x = 32 - tex_x - 1;
+		// ft_printf("tex_x: %d\n", tex_x);
+		int		y = line_start;
+		while (y < line_end)
+		{
+			int d = y * 256 - HEIGHT * 128 + (line_end - line_start) * 128;
+			int tex_y = ((d * 32) / (line_end - line_start)) / 256;
+			pixel(w->image, x, y, w->textures[0]->buffer[tex_y * 32 + tex_x]);
+			y++;
+		}
 		x += NUMBER_OF_THREADS;
 	}
 	return (NULL);
@@ -166,7 +185,6 @@ int				draw_loop(t_wolf *w)
 		if (pthread_create(&threads[i], NULL, render, &params[i]) != 0)
 		{
 			ft_printf("Error\n");
-			return (1);
 		}
 	}
 	i = -1;
@@ -175,6 +193,7 @@ int				draw_loop(t_wolf *w)
 		pthread_join(threads[i], NULL);
 	}
 	mlx_put_image_to_window(w->gfx->mlx_ptr, w->gfx->win_ptr, w->image->ptr, 0, 0);
+	// mlx_put_image_to_window(w->gfx->mlx_ptr, w->gfx->win_ptr, w->textures[0]->ptr, 0, 0);
 	return (0);
 }
 
@@ -211,8 +230,6 @@ void			player_init(t_player *player)
 	player->vertical_offset = 0;
 }
 
-// Trying to set player position at a valid location
-
 void			start(char *file_path)
 {
 	t_wolf		w;
@@ -229,8 +246,10 @@ void			start(char *file_path)
 	w.image = new_image(w.gfx->mlx_ptr, WIDTH, HEIGHT);
 
 	player_init(&player);
-	set_player_position(&player, &map);
+	// set_player_position(&player, &map);
 	w.player = &player;
+
+	load_all_textures(&w);
 
 	set_hooks(&w);
 	mlx_do_key_autorepeatoff(w.gfx->mlx_ptr);

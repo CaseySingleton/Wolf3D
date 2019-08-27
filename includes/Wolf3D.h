@@ -29,14 +29,11 @@
 
 # define WIDTH	1600
 # define HEIGHT	900
-# define MINI_MAP_SIZE WIDTH / 6
 # define CENTER_X WIDTH / 2
 # define CENTER_Y HEIGHT / 2
 
-# define SKY_COLOR 0xBDFCFF
-# define WALL_COLOR_1 0xFFE6BE
-# define WALL_COLOR_2 0xBAFFDB
-# define FLOOR_COLOR 0x918D87
+# define WALL_COLOR 0xA3F4FF
+# define NUM_TEXTURES 1
 
 typedef struct		s_object
 {
@@ -52,6 +49,7 @@ typedef struct		s_wolf
 	t_player		*player;
 	t_input			*input;
 	t_object		*objects;
+	t_image			*textures[NUM_TEXTURES];
 }					t_wolf;
 
 typedef struct		s_thread
@@ -71,6 +69,13 @@ int					mouse_motion(int x, int y, t_wolf *w);
 /*
 **	ray_marching.c
 */
+
+/*
+**	texture.c
+*/
+
+t_image				*load_texture(char *texture_data, t_wolf *w);
+void				load_all_textures(t_wolf *w);
 
 // float				ray_march(t_wolf *w, t_xyz point, float angle, int color);
 

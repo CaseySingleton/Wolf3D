@@ -10,13 +10,13 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME		= wolf3D
+NAME		= Wolf3D
 
 CC			= gcc
 CFLAGS		= -Wall -Werror -Wextra -O3 -lpthread
 FLAGS		= $(CFLAGS)
 
-FILES		= main.c player.c map.c input.c
+FILES		= main.c player.c map.c input.c texture.c
 
 FRAMEWORKS	= -framework OpenGL -framework Appkit
 
