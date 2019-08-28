@@ -19,7 +19,7 @@ t_map	*map_init(void)
 
 	if (!(map = (t_map *)malloc(sizeof(t_map))))
 		return (NULL);
-	map->file_name = NULL;
+	map->path = NULL;
 	map->info = NULL;
 	map->name = NULL;
 	map->width = -1;
@@ -67,6 +67,7 @@ static void		atoi_line(int **wolf, char *line, int position)
 		free(numbers[i]);
 	free(numbers);
 }
+
 /*
 **	void			print_map_info(t_map *map)
 **	{
@@ -80,7 +81,7 @@ static void		atoi_line(int **wolf, char *line, int position)
 **	}
 */
 
-t_map			*get_map(char *file_name)
+t_map			*get_map(char *path)
 {
 	t_map		*map;
 	int			fd;
@@ -88,8 +89,8 @@ t_map			*get_map(char *file_name)
 	char		*line;
 
 	map = map_init();
-	map->file_name = file_name;
-	fd = open_file(file_name);
+	map->path = path;
+	fd = open_file(path);
 	i = -1;
 	while (get_next_line(fd, &line))
 	{

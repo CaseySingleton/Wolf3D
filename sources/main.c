@@ -12,13 +12,6 @@
 
 # include "Wolf3D.h"
 
-void			set_hooks(t_wolf *w)
-{
-	mlx_hook(w->gfx->win_ptr, 2, 0, toggle_key, w);
-	mlx_hook(w->gfx->win_ptr, 3, 0, toggle_key, w);
-	mlx_hook(w->gfx->win_ptr, 6, 0, mouse_motion, w);
-}
-
 int				shader(float distance, int color)
 {
 	int			new_color;
@@ -124,7 +117,7 @@ static void		draw_wall(t_wolf *w, t_ray_vars *v, int y)
 		d = y * 256 - HEIGHT * 128 + v->line_height * 128;
 		tex_y = ((d * 32) / v->line_height) / 256;
 		texture_choice = (abs(w->map->info[v->map_y][v->map_x] - 1)) % NUM_TEXTURES;
-		pixel(w->image, v->x, y, shader(v->dist,
+		pixel(w->image[w->front], v->x, y, shader(v->dist,
 			w->textures[texture_choice]->buffer[tex_y * 32 + tex_x]));
 		y++;
 	}
@@ -150,24 +143,26 @@ void			*render(void *info)
 			v.line_start = 0;
 		if (v.line_end > HEIGHT)
 			v.line_end = HEIGHT;
-		line(w->image, (t_xyz){v.x, v.line_start, 0}, (t_xyz){v.x, 0, 0}, 0x447c80);
-		line(w->image, (t_xyz){v.x, v.line_end, 0}, (t_xyz){v.x, HEIGHT, 0}, 0x2b2b2b);
+		line(w->image[w->front], (t_xyz){v.x, v.line_start, 0}, (t_xyz){v.x, 0, 0}, 0x447c80);
+		line(w->image[w->front], (t_xyz){v.x, v.line_end, 0}, (t_xyz){v.x, HEIGHT, 0}, 0x2b2b2b);
 		draw_wall(w, &v, v.line_start);
 		v.x += NUMBER_OF_THREADS;
 	}
 	return (NULL);
 }
 
-int				draw_loop(t_wolf *w)
+void				*draw_loop(void *p)
 {
+	// ft_printf("draw loop\n");
 	int			i;
 	pthread_t	threads[NUMBER_OF_THREADS];
 	t_thread	params[NUMBER_OF_THREADS];
+	t_wolf		*w;
 
+	w = (t_wolf *)p;
 	i = -1;
-	ft_bzero(w->image->buffer, WIDTH * HEIGHT * sizeof(int));
-	mlx_clear_window(w->gfx->mlx_ptr, w->gfx->win_ptr);
-	handle_input(w);
+	// ft_bzero(w->image->buffer, WIDTH * HEIGHT * sizeof(int));
+	// mlx_clear_window(w->mlx_ptr, w->win_ptr);
 	while (++i < NUMBER_OF_THREADS)
 	{
 		params[i].w = w;
@@ -178,11 +173,32 @@ int				draw_loop(t_wolf *w)
 	i = -1;
 	while (++i < NUMBER_OF_THREADS)
 		pthread_join(threads[i], NULL);
-	mlx_put_image_to_window(w->gfx->mlx_ptr, w->gfx->win_ptr, w->image->ptr, 0, 0);
+	return (NULL);
+}
+
+void			*display(void *p)
+{
+	t_wolf		*w;
+
+	w = (t_wolf *)p;
+	mlx_put_image_to_window(w->mlx_ptr, w->win_ptr, w->image[w->front ^ 1]->ptr, 0, 0);
+	return (NULL);
+}
+
+int				lol(t_wolf *w)
+{
+	pthread_t	threads[3];
+
+	handle_input(w);
+	pthread_create(&threads[0], NULL, draw_loop, (void *)w);
+	pthread_create(&threads[1], NULL, display, (void *)w);
+	pthread_join(threads[0], NULL);
+	pthread_join(threads[1], NULL);
+	w->front ^= 1;
 	return (0);
 }
 
-void			set_player_position(t_wolf *w)
+void			set_player_position(t_wolf *w) // Needs to return some error if map is full
 {
 	int			y;
 	int			x;
@@ -214,28 +230,35 @@ void			player_init(t_player *player)
 	player->camera.y = 1.0f;
 }
 
+
+void			set_hooks(t_wolf *w)
+{
+	mlx_do_key_autorepeatoff(w->mlx_ptr);
+	mlx_hook(w->win_ptr, 2, 0, toggle_key, w);
+	mlx_hook(w->win_ptr, 3, 0, toggle_key, w);
+	mlx_hook(w->win_ptr, 6, 0, mouse_motion, w);
+	mlx_loop_hook(w->mlx_ptr, lol, w);
+}
+
 void			start(char *file_path)
 {
 	t_wolf		w;
-	t_gfx		gfx;
 	t_input		input;
 	t_player 	player;
 
-	w.map_path = file_path;
-	w.gfx = &gfx;
 	w.input = &input;
 	w.map = get_map(file_path);
-	w.gfx->mlx_ptr = mlx_init();
-	w.gfx->win_ptr = mlx_new_window(w.gfx->mlx_ptr, WIDTH, HEIGHT, "RayCaster");
-	w.image = new_image(w.gfx->mlx_ptr, WIDTH, HEIGHT);
+	w.mlx_ptr = mlx_init();
+	w.win_ptr = mlx_new_window(w.mlx_ptr, WIDTH, HEIGHT, "RayCaster");
+	w.image[0] = new_image(w.mlx_ptr, WIDTH, HEIGHT);
+	w.image[1] = new_image(w.mlx_ptr, WIDTH, HEIGHT);
+	w.front = 0;
 	player_init(&player);
 	w.player = &player;
 	set_player_position(&w);
 	load_all_textures(&w);
 	set_hooks(&w);
-	mlx_do_key_autorepeatoff(w.gfx->mlx_ptr);
-	mlx_loop_hook(w.gfx->mlx_ptr, draw_loop, &w);
-	mlx_loop(w.gfx->mlx_ptr);
+	mlx_loop(w.mlx_ptr);
 }
 
 int				main(int argc, char *argv[])

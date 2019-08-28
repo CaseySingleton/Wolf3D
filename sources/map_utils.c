@@ -1,41 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map.h                                              :+:      :+:    :+:   */
+/*   map_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/06 19:17:35 by csinglet          #+#    #+#             */
-/*   Updated: 2019/03/06 19:17:36 by csinglet         ###   ########.fr       */
+/*   Created: 2019/08/28 14:17:35 by csinglet          #+#    #+#             */
+/*   Updated: 2019/08/28 14:17:35 by csinglet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAP_H
-# define MAP_H
+#include "map.h"
 
-# include "draw.h"
+void				free_map(t_map *m)
+{
+	int				y;
 
-typedef struct 		s_map
+	y = -1;
+	while (++y < m->height)
+	{
+		free(m->info[y]);
+		m->info[y] = NULL;
+	}
+	free(m->info);
+	free(m->name);
+	free(m);
+	m->info = NULL;
+	m->name = NULL;
+	m = NULL;
+}
+
+t_map				*reload_map(t_map *m)
 {
 	char			*path;
-	char			*name;
-	int				**info;
-	int				width;
-	int				height;
-}					t_map;
 
-/*
-**	map.c
-*/
-
-t_map				*map_init(void);
-t_map				*get_map(char *path);
-
-/*
-**	map_utils.c
-*/
-
-void				free_map(t_map *m);
-t_map				*reload_map(t_map *m);
-
-#endif
+	path = m->path;
+	free_map(m);
+	m = get_map(path);
+	return (m);
+}

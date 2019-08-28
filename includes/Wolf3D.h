@@ -43,9 +43,10 @@ typedef struct		s_object
 
 typedef struct		s_wolf
 {
-	char			*map_path;
-	t_gfx			*gfx;
-	t_image			*image;
+	void			*mlx_ptr;
+	void			*win_ptr;
+	int				front;
+	t_image			*image[2];
 	t_map			*map;
 	t_player		*player;
 	t_input			*input;
@@ -73,12 +74,17 @@ typedef struct		s_ray_vars
 	int				line_height;
 	int				line_start;
 	int				line_end;
+	int				d;
+	int				tex_x;
+	int				tex_y;
 }					t_ray_vars;
 
 typedef struct		s_thread
 {
 	t_wolf			*w;
+	t_ray_vars		*v;
 	int				x;
+	int				y;
 }					t_thread;
 
 /*

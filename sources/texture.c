@@ -19,7 +19,7 @@ t_image				*load_texture(char *texture_path, t_wolf *w)
 
 	if (!(img = (t_image *)malloc(sizeof(t_image))))
 		return (NULL);
-	if ((img->ptr = mlx_xpm_file_to_image(w->gfx->mlx_ptr, texture_path, &img->width, &img->height)) == NULL)
+	if ((img->ptr = mlx_xpm_file_to_image(w->mlx_ptr, texture_path, &img->width, &img->height)) == NULL)
 	{
 		ft_printf("Error: Failed to load texture: %s\n", texture_path);
 	}
