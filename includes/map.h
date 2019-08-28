@@ -19,7 +19,6 @@ typedef struct 		s_map
 {
 	char			*file_name;
 	int				**info;
-	t_xyz			**vmap;
 	char			*name;
 	int				width;
 	int				height;

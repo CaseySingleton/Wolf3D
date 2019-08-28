@@ -50,7 +50,7 @@ int			handle_input(t_wolf *w)
 		ft_printf("Exiting Wolf3D\n");
 		exit(0);
 	}
-	if (k[KEY_W] || k[KEY_S]) // Left off here
+	if (k[KEY_W] || k[KEY_S])
 	{
 		float	move_x = w->player->direction.x * 0.1;
 		float	move_y = w->player->direction.y * 0.1;
@@ -59,11 +59,13 @@ int			handle_input(t_wolf *w)
 		move_y *= ((k[KEY_W]) ? 1 : -1);
 		move_x += w->player->where.x;
 		move_y += w->player->where.y;
-		if (w->map->info[(int)w->player->where.y][(int)move_x] == 0)
+		if (w->map->info[(int)w->player->where.y][(int)(move_x + 0.1f)] <= 0 &&
+			w->map->info[(int)w->player->where.y][(int)(move_x - 0.1f)] <= 0)
 		{
 			w->player->where.x = move_x;
 		}
-		if (w->map->info[(int)move_y][(int)w->player->where.x] == 0)
+		if (w->map->info[(int)(move_y + 0.1f)][(int)w->player->where.x] <= 0 &&
+			w->map->info[(int)(move_y - 0.1f)][(int)w->player->where.x] <= 0)
 		{
 			w->player->where.y = move_y;
 		}
@@ -89,14 +91,20 @@ int			handle_input(t_wolf *w)
 		move_y *= ((k[KEY_Q]) ? 1 : -1);
 		move_x += w->player->where.x;
 		move_y += w->player->where.y;
-		if (w->map->info[(int)w->player->where.y][(int)move_x] == 0)
+		if (w->map->info[(int)w->player->where.y][(int)move_x] <= 0)
 		{
 			w->player->where.x = move_x;
 		}
-		if (w->map->info[(int)move_y][(int)w->player->where.x] == 0)
+		if (w->map->info[(int)move_y][(int)w->player->where.x] <= 0)
 		{
 			w->player->where.y = move_y;
 		}
+	}
+	if (k[KEY_R])
+	{
+		ft_printf("Reloading map\n");
+		// Free the map structure
+		w->map = get_map(w->map_path);
 	}
 	return (0);
 }

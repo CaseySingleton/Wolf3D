@@ -19,11 +19,6 @@ void			set_hooks(t_wolf *w)
 	mlx_hook(w->gfx->win_ptr, 6, 0, mouse_motion, w);
 }
 
-void			dda(t_wolf *w)
-{
-
-}
-
 int				shader(float distance, int color)
 {
 	int			new_color;
@@ -35,7 +30,7 @@ int				shader(float distance, int color)
 	r = ((color >> 2 * 8) & 0xFF);
 	g = ((color >> 1 * 8) & 0xFF);
 	b = ((color >> 0 * 8) & 0xFF);
-	distance *= 7;
+	distance *= 10;
 	if (r > (int)((r / 0xFF) * distance))
 		new_color |= (r - (int)((r / (float)0xFF) * distance)) << 2 * 8;
 	if (g > (int)((g / 0xFF) * distance))
@@ -45,125 +40,120 @@ int				shader(float distance, int color)
 	return (new_color);
 }
 
+static void		init_variables(t_wolf *w, t_ray_vars *v)
+{
+	v->camera_x = 2 * v->x / (float)WIDTH - 1;
+	v->dir_x = w->player->direction.x + w->player->camera.x * v->camera_x;
+	v->dir_y = w->player->direction.y + w->player->camera.y * v->camera_x;
+	v->map_x = w->player->where.x;
+	v->map_y = w->player->where.y;
+	v->delta_dist_x = fabs(1 / v->dir_x);
+	v->delta_dist_y = fabs(1 / v->dir_y);
+	v->hit = 0;
+}
+
+static void		determine_step_direction(t_wolf *w, t_ray_vars *v)
+{
+	if (v->dir_x < 0)
+	{
+		v->step_x = -1;
+		v->dist_x = (w->player->where.x - v->map_x) * v->delta_dist_x;
+	}
+	else
+	{
+		v->step_x = 1;
+		v->dist_x = (v->map_x + 1.0f - w->player->where.x) * v->delta_dist_x;
+	}
+	if (v->dir_y < 0)
+	{
+		v->step_y = -1;
+		v->dist_y = (w->player->where.y - v->map_y) * v->delta_dist_y;
+	}
+	else
+	{
+		v->step_y = 1;
+		v->dist_y = (v->map_y + 1.0f - w->player->where.y) * v->delta_dist_y;
+	}
+}
+
+static void		dda(t_wolf *w, t_ray_vars *v)
+{
+	while (v->hit == 0)
+	{
+		if (v->dist_x < v->dist_y)
+		{
+			v->dist_x += v->delta_dist_x;
+			v->map_x += v->step_x;
+			v->side = 0;
+		}
+		else
+		{
+			v->dist_y += v->delta_dist_y;
+			v->map_y += v->step_y;
+			v->side = 1;
+		}
+		if (w->map->info[v->map_y][v->map_x] != 0)
+			v->hit = 1;
+	}
+	if (v->side == 0)
+		v->dist = (v->map_x - w->player->where.x + (1 - v->step_x)
+			/ 2) / v->dir_x;
+	else
+		v->dist = (v->map_y - w->player->where.y + (1 - v->step_y)
+			/ 2) / v->dir_y;
+}
+
+static void		draw_wall(t_wolf *w, t_ray_vars *v, int y)
+{
+	float	wall_x;
+	int		d;
+	int		tex_x;
+	int		tex_y;
+	int		texture_choice;
+
+	if (v->side == 0)
+		wall_x = w->player->where.y + v->dist * v->dir_y;
+	else
+		wall_x = w->player->where.x + v->dist * v->dir_x;
+	wall_x -= floor(wall_x);
+	tex_x = wall_x * 32;
+	if ((v->side == 0 && v->dir_x > 0) || (v->side == 1 && v->dir_y < 0))
+		tex_x = 32 - tex_x - 1;
+	while (y < v->line_end)
+	{
+		d = y * 256 - HEIGHT * 128 + v->line_height * 128;
+		tex_y = ((d * 32) / v->line_height) / 256;
+		texture_choice = (abs(w->map->info[v->map_y][v->map_x] - 1)) % NUM_TEXTURES;
+		pixel(w->image, v->x, y, shader(v->dist,
+			w->textures[texture_choice]->buffer[tex_y * 32 + tex_x]));
+		y++;
+	}
+}
+
 void			*render(void *info)
 {
+	int			i;
 	t_wolf		*w;
-	int			x;
-	float		camera_x;
-	float		ray_dir_x;
-	float		ray_dir_y;
+	t_ray_vars	v;
 
 	w = ((t_thread *)info)->w;
-	x = ((t_thread *)info)->x;
-	while (x < WIDTH)
+	v.x = ((t_thread *)info)->x;
+	while (v.x < WIDTH)
 	{
-		camera_x = 2 * x / (float)WIDTH - 1;
-		ray_dir_x = w->player->direction.x + w->player->camera.x * camera_x;
-		ray_dir_y = w->player->direction.y + w->player->camera.y * camera_x;
-		
-		int 	map_x;
-		int		map_y;
-		float	side_dist_x;
-		float	side_dist_y;
-		float	delta_dist_x;
-		float	delta_dist_y;
-		float	perp_wall_dist;
-		int		step_x;
-		int		step_y;
-		int		hit;
-		int		side;
-		int		line_height;
-		int		line_start;
-		int		line_end;
-
-		map_x = w->player->where.x;
-		map_y = w->player->where.y;
-		delta_dist_x = fabs(1 / ray_dir_x);
-		delta_dist_y = fabs(1 / ray_dir_y);
-		hit = 0;
-		if (ray_dir_x < 0)
-		{
-			step_x = -1;
-			side_dist_x = (w->player->where.x - map_x) * delta_dist_x;
-		}
-		else
-		{
-			step_x = 1;
-			side_dist_x = (map_x + 1.0f - w->player->where.x) * delta_dist_x;
-		}
-		if (ray_dir_y < 0)
-		{
-			step_y = -1;
-			side_dist_y = (w->player->where.y - map_y) * delta_dist_y;
-		}
-		else
-		{
-			step_y = 1;
-			side_dist_y = (map_y + 1.0f - w->player->where.y) * delta_dist_y;
-		}
-		// DDA
-		while (hit == 0)
-		{
-			if (side_dist_x < side_dist_y)
-			{
-				side_dist_x += delta_dist_x;
-				map_x += step_x;
-				side = 0;
-			}
-			else
-			{
-				side_dist_y += delta_dist_y;
-				map_y += step_y;
-				side = 1;
-			}
-			// Check if ray has hit a wall
-			if (w->map->info[map_y][map_x] > 0)
-			{
-				hit = 1;
-			}
-		}
-		// Determine distance to wall
-		if (side == 0)
-		{
-			perp_wall_dist = (map_x - w->player->where.x + (1 - step_x) / 2) / ray_dir_x;
-		}
-		else
-		{
-			perp_wall_dist = (map_y - w->player->where.y + (1 - step_y) / 2) / ray_dir_y;
-		}
-		line_height = (HEIGHT / perp_wall_dist);
-		line_start = -line_height / 2 + HEIGHT / 2;
-		line_end = line_height / 2 + HEIGHT / 2;
-		if (line_start < 0)
-		{
-			line_start = 0;
-		}
-		if (line_end > HEIGHT)
-		{
-			line_end = HEIGHT;
-		}
-		line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, 0, 0}, 0x444444);
-		// line(w->image, (t_xyz){x, line_start, 0}, (t_xyz){x, line_end, 0}, shader(perp_wall_dist, WALL_COLOR));
-		line(w->image, (t_xyz){x, line_end, 0}, (t_xyz){x, HEIGHT, 0}, 0x2b2b2b);
-		float	wall_x;
-		if (side == 0)
-			wall_x = w->player->where.y + perp_wall_dist * ray_dir_y;
-		else
-			wall_x = w->player->where.x + perp_wall_dist * ray_dir_x;
-		wall_x -= floor(wall_x);
-		int		tex_x = wall_x * 32;
-		if ((side == 0 && ray_dir_x > 0) || (side == 1 && ray_dir_y < 0))
-			tex_x = 32 - tex_x - 1;
-		// ft_printf("tex_x: %d\n", tex_x);
-		int		y = line_start;
-		while (y < line_end)
-		{
-			int d = y * 256 - HEIGHT * 128 + (line_end - line_start) * 128;
-			int tex_y = ((d * 32) / (line_end - line_start)) / 256;
-			pixel(w->image, x, y, w->textures[0]->buffer[tex_y * 32 + tex_x]);
-			y++;
-		}
-		x += NUMBER_OF_THREADS;
+		init_variables(w, &v);
+		determine_step_direction(w, &v);
+		dda(w, &v);
+		v.line_height = (HEIGHT / v.dist);
+		v.line_start = -v.line_height / 2 + HEIGHT / 2;
+		v.line_end = v.line_height / 2 + HEIGHT / 2;
+		if (v.line_start < 0)
+			v.line_start = 0;
+		if (v.line_end > HEIGHT)
+			v.line_end = HEIGHT;
+		line(w->image, (t_xyz){v.x, v.line_start, 0}, (t_xyz){v.x, 0, 0}, 0x447c80);
+		line(w->image, (t_xyz){v.x, v.line_end, 0}, (t_xyz){v.x, HEIGHT, 0}, 0x2b2b2b);
+		draw_wall(w, &v, v.line_start);
+		v.x += NUMBER_OF_THREADS;
 	}
 	return (NULL);
 }
@@ -183,36 +173,31 @@ int				draw_loop(t_wolf *w)
 		params[i].w = w;
 		params[i].x = i;
 		if (pthread_create(&threads[i], NULL, render, &params[i]) != 0)
-		{
 			ft_printf("Error\n");
-		}
 	}
 	i = -1;
 	while (++i < NUMBER_OF_THREADS)
-	{
 		pthread_join(threads[i], NULL);
-	}
 	mlx_put_image_to_window(w->gfx->mlx_ptr, w->gfx->win_ptr, w->image->ptr, 0, 0);
-	// mlx_put_image_to_window(w->gfx->mlx_ptr, w->gfx->win_ptr, w->textures[0]->ptr, 0, 0);
 	return (0);
 }
 
-void			set_player_position(t_player *player, t_map *map)
+void			set_player_position(t_wolf *w)
 {
 	int			y;
 	int			x;
 
 	y = -1;
-	while (++y < map->height)
+	while (++y < w->map->height)
 	{
 		x = -1;
-		while (++x < map->width)
+		while (++x < w->map->width)
 		{
-			if (map->info[y][x] == 0)
+			if (w->map->info[y][x] == 0)
 			{
-				player->where.x = x;
-				player->where.y = y;
-				ft_printf("x: %d, y: %d\n", x, y);
+				ft_printf("Setting player position at: (%d.5, %d.5)\n", x, y);
+				w->player->where.x = x + 0.5f;
+				w->player->where.y = y + 0.5f;
 				return ;
 			}
 		}
@@ -221,36 +206,32 @@ void			set_player_position(t_player *player, t_map *map)
 
 void			player_init(t_player *player)
 {
-	player->where.x = 5;
-	player->where.y = 5;
+	player->where.x = 0;
+	player->where.y = 0;
 	player->direction.x = -1;
 	player->direction.y = 0;
 	player->camera.x = 0.0f;
 	player->camera.y = 1.0f;
-	player->vertical_offset = 0;
 }
 
 void			start(char *file_path)
 {
 	t_wolf		w;
 	t_gfx		gfx;
-	t_map		map;
 	t_input		input;
 	t_player 	player;
 
+	w.map_path = file_path;
 	w.gfx = &gfx;
 	w.input = &input;
 	w.map = get_map(file_path);
 	w.gfx->mlx_ptr = mlx_init();
 	w.gfx->win_ptr = mlx_new_window(w.gfx->mlx_ptr, WIDTH, HEIGHT, "RayCaster");
 	w.image = new_image(w.gfx->mlx_ptr, WIDTH, HEIGHT);
-
 	player_init(&player);
-	// set_player_position(&player, &map);
 	w.player = &player;
-
+	set_player_position(&w);
 	load_all_textures(&w);
-
 	set_hooks(&w);
 	mlx_do_key_autorepeatoff(w.gfx->mlx_ptr);
 	mlx_loop_hook(w.gfx->mlx_ptr, draw_loop, &w);

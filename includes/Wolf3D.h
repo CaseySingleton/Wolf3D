@@ -27,13 +27,13 @@
 # include "mlx.h"
 # include "mlx_keys.h"
 
-# define WIDTH	1600
-# define HEIGHT	900
+# define WIDTH	1280
+# define HEIGHT	720
 # define CENTER_X WIDTH / 2
 # define CENTER_Y HEIGHT / 2
 
 # define WALL_COLOR 0xA3F4FF
-# define NUM_TEXTURES 1
+# define NUM_TEXTURES 3
 
 typedef struct		s_object
 {
@@ -43,6 +43,7 @@ typedef struct		s_object
 
 typedef struct		s_wolf
 {
+	char			*map_path;
 	t_gfx			*gfx;
 	t_image			*image;
 	t_map			*map;
@@ -51,6 +52,28 @@ typedef struct		s_wolf
 	t_object		*objects;
 	t_image			*textures[NUM_TEXTURES];
 }					t_wolf;
+
+typedef struct		s_ray_vars
+{
+	int				x;
+	float			camera_x;
+	float			dir_x;
+	float			dir_y;
+	int 			map_x;
+	int				map_y;
+	float			dist_x;
+	float			dist_y;
+	float			delta_dist_x;
+	float			delta_dist_y;
+	float			dist;
+	int				step_x;
+	int				step_y;
+	int				hit;
+	int				side;
+	int				line_height;
+	int				line_start;
+	int				line_end;
+}					t_ray_vars;
 
 typedef struct		s_thread
 {
