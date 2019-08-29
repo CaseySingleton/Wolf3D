@@ -122,7 +122,7 @@ void			*render_scene(void *info)
 		if (v.line_end > HEIGHT)
 			v.line_end = HEIGHT;
 		line(w->image[w->front], (t_xyz){v.x, v.line_start, 0},
-			(t_xyz){v.x, 0, 0}, 0x447c80);
+			(t_xyz){v.x, 0, 0}, 0x9edbde);
 		line(w->image[w->front], (t_xyz){v.x, v.line_end, 0},
 			(t_xyz){v.x, HEIGHT, 0}, 0x2b2b2b);
 		draw_wall(w, &v);
