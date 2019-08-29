@@ -13,7 +13,7 @@
 #include "Wolf3D.h"
 #include "map.h"
 
-t_map	*map_init(void)
+t_map			*map_init(void)
 {
 	t_map		*map;
 
@@ -24,6 +24,7 @@ t_map	*map_init(void)
 	map->name = NULL;
 	map->width = -1;
 	map->height = -1;
+	map->error = 0;
 	return (map);
 }
 
@@ -39,21 +40,21 @@ static int		open_file(const char *file_name)
 	return (fd);
 }
 
-static int		**map_info_init(int width, int height)
+static int		**map_info_init(t_map *m)
 {
-	int			**wolf;
+	int			**info;
 	int			i;
 
-	if (!(wolf = (int **)malloc(sizeof(int * *) * height)))
+	if (!(info = (int **)malloc(sizeof(int **) * m->height)))
 		return (NULL);
 	i = -1;
-	while (++i < height)
-		if (!(wolf[i] = (int *)malloc(sizeof(int) * width)))
+	while (++i < m->height)
+		if (!(info[i] = (int *)malloc(sizeof(int) * m->width)))
 			return (NULL);
-	return (wolf);
+	return (info);
 }
 
-static void		atoi_line(int **wolf, char *line, int position)
+static void		atoi_line(t_map *m, char *line, int position)
 {
 	char		**numbers;
 	int			i;
@@ -61,25 +62,17 @@ static void		atoi_line(int **wolf, char *line, int position)
 	numbers = ft_strsplit(line, ' ');
 	i = -1;
 	while (numbers[++i] != NULL)
-		wolf[position][i] = ft_atoi(numbers[i]);
+		;
+	if (i != m->width)
+		m->error = 1;
+	i = -1;
+	while (numbers[++i] != NULL)
+		m->info[position][i] = ft_atoi(numbers[i]);
 	i = -1;
 	while (numbers[++i] != NULL)
 		free(numbers[i]);
 	free(numbers);
 }
-
-/*
-**	void			print_map_info(t_map *map)
-**	{
-**		ft_printf("name: \"%s\" width: %d height: %d\n", map->name, map->width, map->height);
-**		for (int i = 0; i < map->height; i++)
-**		{
-**			for (int j = 0; j < map->width; j++)
-**				ft_printf("%d ", map->info[i][j]);
-**			ft_printf("\n");
-**		}
-**	}
-*/
 
 t_map			*get_map(char *path)
 {
@@ -88,11 +81,11 @@ t_map			*get_map(char *path)
 	int			i;
 	char		*line;
 
+	fd = open_file(path);
 	map = map_init();
 	map->path = path;
-	fd = open_file(path);
 	i = -1;
-	while (get_next_line(fd, &line))
+	while (get_next_line(fd, &line) && map->error == 0)
 	{
 		if (map->name == NULL)
 			map->name = ft_strdup(line);
@@ -101,10 +94,11 @@ t_map			*get_map(char *path)
 		else if (map->height == -1)
 			map->height = ft_atoi(line);
 		else if (map->info == NULL)
-			map->info = map_info_init(map->width, map->height);
-		if (map->info != NULL)
-			atoi_line(map->info, line, ++i);
+			map->info = map_info_init(map);
+		if (map->info != NULL && ++i < map->height)
+			atoi_line(map, line, i);
 		free(line);
 	}
-	return (map);
+	map->error = (i != map->height - 1) ? 1 : 0;
+	return (is_map_valid(&map));
 }

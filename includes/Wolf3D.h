@@ -16,6 +16,8 @@
 # include <math.h>
 # include <stdio.h>
 # include <fcntl.h>
+# include <dirent.h>
+# include <pthread.h>
 
 # include "libft.h"
 # include "get_next_line.h"
@@ -35,12 +37,6 @@
 # define WALL_COLOR 0xA3F4FF
 # define NUM_TEXTURES 3
 
-typedef struct		s_object
-{
-	t_line			line;
-	struct s_object	*next;
-}					t_object;
-
 typedef struct		s_wolf
 {
 	void			*mlx_ptr;
@@ -50,7 +46,6 @@ typedef struct		s_wolf
 	t_map			*map;
 	t_player		*player;
 	t_input			*input;
-	t_object		*objects;
 	t_image			*textures[NUM_TEXTURES];
 }					t_wolf;
 
@@ -88,24 +83,46 @@ typedef struct		s_thread
 }					t_thread;
 
 /*
+**	render.c
+*/
+
+void				*render_scene(void *info);
+
+/*
+**	multithreading.c
+*/
+
+void				*render_threading(void *p);
+
+/*
+**	player.c
+*/
+
+void				set_player_position(t_wolf *w);
+void				player_init(t_player *player);
+
+/*
 **	input.c
 */
 
-int					toggle_key(int key, t_wolf *w);
 int					handle_input(t_wolf *w);
+int					toggle_key(int key, t_wolf *w);
 int					mouse_motion(int x, int y, t_wolf *w);
 
 /*
-**	ray_marching.c
+**	movement.c
 */
+
+void				player_movement(t_wolf *w);
+void				player_strafing(t_wolf *w);
+void				player_rotation(t_wolf *w);
 
 /*
 **	texture.c
 */
 
-t_image				*load_texture(char *texture_data, t_wolf *w);
+int					shader(float distance, int color);
 void				load_all_textures(t_wolf *w);
-
-// float				ray_march(t_wolf *w, t_xyz point, float angle, int color);
+void				free_textures(t_wolf *w);
 
 #endif

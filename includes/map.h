@@ -22,6 +22,7 @@ typedef struct 		s_map
 	int				**info;
 	int				width;
 	int				height;
+	int				error;
 }					t_map;
 
 /*
@@ -35,7 +36,7 @@ t_map				*get_map(char *path);
 **	map_utils.c
 */
 
+t_map				*is_map_valid(t_map **m);
 void				free_map(t_map *m);
-t_map				*reload_map(t_map *m);
 
 #endif

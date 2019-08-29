@@ -10,11 +10,42 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "map.h"
+#include "Wolf3D.h"
 
-void				free_map(t_map *m)
+static void		map_error(t_map **m)
 {
-	int				y;
+	ft_printf("Error: Map is invalid\n");
+	free_map(*m);
+	*m = NULL;
+}
+
+t_map			*is_map_valid(t_map **m)
+{
+	int			i;
+
+	if ((*m)->error == 0)
+	{
+		i = -1;
+		while (++i < (*m)->height)
+		{
+			if ((*m)->info[i][0] < 1 || (*m)->info[i][(*m)->width - 1] < 1)
+				(*m)->error = 1;
+		}
+		i = -1;
+		while (++i < (*m)->width)
+		{
+			if ((*m)->info[0][i] < 1 || (*m)->info[(*m)->height - 1][i] < 1)
+				(*m)->error = 1;
+		}
+	}
+	if ((*m)->error == 1)
+		map_error(m);
+	return (*m);
+}
+
+void			free_map(t_map *m)
+{
+	int			y;
 
 	y = -1;
 	while (++y < m->height)
@@ -28,14 +59,4 @@ void				free_map(t_map *m)
 	m->info = NULL;
 	m->name = NULL;
 	m = NULL;
-}
-
-t_map				*reload_map(t_map *m)
-{
-	char			*path;
-
-	path = m->path;
-	free_map(m);
-	m = get_map(path);
-	return (m);
 }

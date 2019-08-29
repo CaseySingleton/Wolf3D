@@ -16,7 +16,8 @@ CC			= gcc
 CFLAGS		= -Wall -Werror -Wextra -O3 -lpthread
 FLAGS		= $(CFLAGS)
 
-FILES		= main.c player.c map.c map_utils.c input.c texture.c
+FILES		= main.c render.c multithreading.c player.c movement.c map.c \
+			  map_utils.c input.c texture.c
 
 FRAMEWORKS	= -framework OpenGL -framework Appkit
 

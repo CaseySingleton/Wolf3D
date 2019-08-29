@@ -12,6 +12,21 @@
 
 #include "Wolf3D.h"
 
+static void	reload_map(t_wolf *w)
+{
+	t_map	*temp;
+
+	ft_printf("Reloading map\n");
+	temp = get_map(w->map->path);
+	if (temp != NULL)
+	{
+		free_map(w->map);
+		w->map = temp;
+	}
+	else
+		ft_printf("Using last working version of map: \n", w->map->name);
+}
+
 int			handle_input(t_wolf *w)
 {
 	char	*k;
@@ -20,65 +35,15 @@ int			handle_input(t_wolf *w)
 	if (k[KEY_ESCAPE])
 	{
 		ft_printf("Exiting Wolf3D\n");
+		free_map(w->map);
+		free_textures(w);
 		exit(0);
 	}
-	if (k[KEY_W] || k[KEY_S])
-	{
-		float	move_x = w->player->direction.x * 0.1;
-		float	move_y = w->player->direction.y * 0.1;
-
-		move_x *= ((k[KEY_W]) ? 1 : -1);
-		move_y *= ((k[KEY_W]) ? 1 : -1);
-		move_x += w->player->where.x;
-		move_y += w->player->where.y;
-		if (w->map->info[(int)w->player->where.y][(int)(move_x + 0.1f)] <= 0 &&
-			w->map->info[(int)w->player->where.y][(int)(move_x - 0.1f)] <= 0)
-		{
-			w->player->where.x = move_x;
-		}
-		if (w->map->info[(int)(move_y + 0.1f)][(int)w->player->where.x] <= 0 &&
-			w->map->info[(int)(move_y - 0.1f)][(int)w->player->where.x] <= 0)
-		{
-			w->player->where.y = move_y;
-		}
-	}
-	if (k[KEY_A] || k[KEY_D])
-	{
-		float	old_direction = w->player->direction.x;
-		float	old_plane = w->player->camera.x;
-		float	rotation = M_PI / 50;
-
-		rotation *= (k[KEY_A]) ? 1 : -1;
-		w->player->direction.x = old_direction * cos(rotation) - w->player->direction.y * sin(rotation);
-		w->player->direction.y = old_direction * sin(rotation) + w->player->direction.y * cos(rotation);
-		w->player->camera.x = old_plane * cos(rotation) - w->player->camera.y * sin(rotation);
-		w->player->camera.y = old_plane * sin(rotation) + w->player->camera.y * cos(rotation);
-	}
-	if (k[KEY_Q] || k[KEY_E])
-	{
-		float	move_x = w->player->direction.y * 0.1;
-		float	move_y = w->player->direction.x * 0.1;
-
-		move_x *= ((k[KEY_Q]) ? -1 : 1);
-		move_y *= ((k[KEY_Q]) ? 1 : -1);
-		move_x += w->player->where.x;
-		move_y += w->player->where.y;
-		if (w->map->info[(int)w->player->where.y][(int)(move_x + 0.1f)] <= 0 &&
-			w->map->info[(int)w->player->where.y][(int)(move_x - 0.1f)] <= 0)
-		{
-			w->player->where.x = move_x;
-		}
-		if (w->map->info[(int)(move_y + 0.1f)][(int)w->player->where.x] <= 0 &&
-			w->map->info[(int)(move_y - 0.1f)][(int)w->player->where.x] <= 0)
-		{
-			w->player->where.y = move_y;
-		}
-	}
 	if (k[KEY_R])
-	{
-		ft_printf("Reloading map\n");
-		w->map = reload_map(w->map);
-	}
+		reload_map(w);
+	player_movement(w);
+	player_strafing(w);
+	player_rotation(w);
 	return (0);
 }
 

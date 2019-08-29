@@ -11,7 +11,27 @@
 /* ************************************************************************** */
 
 #include "Wolf3D.h"
-#include <dirent.h>
+
+int					shader(float distance, int color)
+{
+	int				new_color;
+	int				r;
+	int				g;
+	int				b;
+
+	new_color = 0;
+	r = ((color >> 2 * 8) & 0xFF);
+	g = ((color >> 1 * 8) & 0xFF);
+	b = ((color >> 0 * 8) & 0xFF);
+	distance *= 10;
+	if (r > (int)((r / 0xFF) * distance))
+		new_color |= (r - (int)((r / (float)0xFF) * distance)) << 2 * 8;
+	if (g > (int)((g / 0xFF) * distance))
+		new_color |= (g - (int)((g / (float)0xFF) * distance)) << 1 * 8;
+	if (b > (int)((b / 0xFF) * distance))
+		new_color |= (b - (int)((b / (float)0xFF) * distance)) << 0 * 8;
+	return (new_color);
+}
 
 t_image				*load_texture(char *texture_path, t_wolf *w)
 {
@@ -19,13 +39,13 @@ t_image				*load_texture(char *texture_path, t_wolf *w)
 
 	if (!(img = (t_image *)malloc(sizeof(t_image))))
 		return (NULL);
-	if ((img->ptr = mlx_xpm_file_to_image(w->mlx_ptr, texture_path, &img->width, &img->height)) == NULL)
+	if ((img->ptr = mlx_xpm_file_to_image(w->mlx_ptr, texture_path, &img->width,
+		&img->height)) == NULL)
 	{
 		ft_printf("Error: Failed to load texture: %s\n", texture_path);
 	}
 	img->buffer = (int *)mlx_get_data_addr(img->ptr, &(img->bits_per_pixel),
 		&(img->image_length), &(img->endian));
-	ft_printf("width: %d, height: %d\n", img->width, img->height);
 	return (img);
 }
 
@@ -44,7 +64,6 @@ void				load_all_textures(t_wolf *w)
 			if (content->d_name[0] == '.')
 				continue ;
 			texture_full_path = ft_strjoin("textures/", content->d_name);
-			ft_printf("Loading %s\n", texture_full_path);
 			w->textures[i] = load_texture(texture_full_path, w);
 			free(texture_full_path);
 			texture_full_path = NULL;
