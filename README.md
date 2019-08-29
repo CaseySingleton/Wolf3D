@@ -6,5 +6,5 @@ Still in progress.
 # Pictures!
 First working version!
 ![](https://i.imgur.com/knFf2eX.png)
-Current version with textures, multithreading, double buffering, and you can load live changes to a map file by pressing the 'r' key
+Current version with textures, multithreading, double buffering, and you can load changes to the map by pressing 'r'
 ![](https://i.imgur.com/Zfj2kiD.png)
