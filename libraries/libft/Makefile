@@ -91,7 +91,6 @@ FILES		= ft_memset.c\
 			  ft_sort_list_ascii.c\
 			  ft_free_strsplit.c\
 			  ft_strndup.c\
-			  ft_strtok.c
 
 SRC			= $(addprefix srcs/, $(FILES))
 OBJ			= $(addprefix build/, $(FILES:.c=.o))

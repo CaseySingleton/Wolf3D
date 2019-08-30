@@ -12,15 +12,16 @@
 
 #include "draw.h"
 
-t_image         *new_image(void *mlx, int width, int height)
+t_image			*new_image(void *mlx, int width, int height)
 {
-    t_image     *i;
+	t_image		*i;
 
-    if (!(i = (t_image *)malloc(sizeof(t_image))))
-        return (NULL);
-    i->ptr = mlx_new_image(mlx, width, height);
-    i->buffer = (int *)mlx_get_data_addr(i->ptr, &(i->bits_per_pixel), &(i->image_length), &(i->endian));
-    i->width = width;
-    i->height = height;
-    return (i);
+	if (!(i = (t_image *)malloc(sizeof(t_image))))
+		return (NULL);
+	i->ptr = mlx_new_image(mlx, width, height);
+	i->buffer = (int *)mlx_get_data_addr(i->ptr, &(i->bits_per_pixel),
+		&(i->image_length), &(i->endian));
+	i->width = width;
+	i->height = height;
+	return (i);
 }

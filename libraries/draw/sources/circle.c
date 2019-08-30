@@ -12,18 +12,6 @@
 
 #include "draw.h"
 
-// static void	place_pixels(t_image *image, t_xyz point, int color)
-// {
-// 	pixel(image, point.x + x, point.y + y, color);
-// 	pixel(image, point.x + y, point.y + x, color);
-// 	pixel(image, point.x - y, point.y + x, color);
-// 	pixel(image, point.x - x, point.y + y, color);
-// 	pixel(image, point.x - x, point.y - y, color);
-// 	pixel(image, point.x - y, point.y - x, color);
-// 	pixel(image, point.x + y, point.y - x, color);
-// 	pixel(image, point.x + x, point.y - y, color);
-// }
-
 void		circle(t_image *image, t_xyz p, int radius, int color)
 {
 	int		x;
@@ -44,15 +32,9 @@ void		circle(t_image *image, t_xyz p, int radius, int color)
 		pixel(image, p.x + y, p.y - x, color);
 		pixel(image, p.x + x, p.y - y, color);
 		if (error <= 0)
-		{
-			y++;
-			error += 2 * y + 1;
-		}
+			error += 2 * ++y + 1;
 		if (error > 0)
-		{
-			x--;
-			error -= 2 * x + 1;
-		}
+			error -= 2 * --x + 1;
 	}
 }
 
@@ -76,14 +58,8 @@ void		ccircle(t_image *image, t_circle c, int color)
 		pixel(image, c.pos.x + y, c.pos.y - x, color);
 		pixel(image, c.pos.x + x, c.pos.y - y, color);
 		if (error <= 0)
-		{
-			y++;
-			error += 2 * y + 1;
-		}
+			error += 2 * ++y + 1;
 		if (error > 0)
-		{
-			x--;
-			error -= 2 * x + 1;
-		}
+			error -= 2 * --x + 1;
 	}
 }

@@ -12,18 +12,18 @@
 
 #include "draw.h"
 
-void			vector_init(t_xyz *v, float x, float y, float z)
+void		vector_init(t_xyz *v, float x, float y, float z)
 {
 	v->x = x;
 	v->y = y;
 	v->z = z;
 }
 
-void		    vector_matrix_multi(t_xyz *vd, float m[4][4], t_xyz* vs)
+void		vector_matrix_multi(t_xyz *vd, float m[4][4], t_xyz *vs)
 {
-	float		x;
-	float		y;
-	float		z;
+	float	x;
+	float	y;
+	float	z;
 
 	x = vs->x * m[0][0] + vs->y * m[0][1] + vs->z * m[0][2] + m[0][3];
 	y = vs->x * m[1][0] + vs->y * m[1][1] + vs->z * m[1][2] + m[1][3];
@@ -33,12 +33,12 @@ void		    vector_matrix_multi(t_xyz *vd, float m[4][4], t_xyz* vs)
 	vd->z = z;
 }
 
-void            vector_translate(t_xyz *v, float x, float y, float z)
+void		vector_translate(t_xyz *v, float x, float y, float z)
 {
-    float      m[4][4];
+	float	m[4][4];
 
-    matrix_init(m, 1, 1, 1);
-    matrix_translate(m, x, y, z);
+	matrix_init(m, 1, 1, 1);
+	matrix_translate(m, x, y, z);
 	vector_matrix_multi(v, m, v);
 }
 
@@ -53,30 +53,16 @@ void		scale_vector(t_xyz *v, float x, float y, float z)
 void		vector_rotate_around_p2(t_xyz *p1, t_xyz p2, float z)
 {
 	float	m[4][4];
-	float	rx = p2.x;
-	float	ry = p2.y;
+	float	rx;
+	float	ry;
 
+	rx = p2.x;
+	ry = p2.y;
 	matrix_rotz_init(m, z);
 	vector_translate(p1, -rx, -ry, 0);
 	vector_matrix_multi(p1, m, p1);
 	vector_translate(p1, rx, ry, 0);
 }
-
-// void		vector_rotate_z(t_xyz *v, float z)
-// {
-// 	float	m[4][4];
-// 	float	vx;
-// 	float	vy;
-// 	float	vz;
-
-// 	vx = WIDTH / 2;
-// 	vy = HEIGHT / 2;
-// 	vz = v->z;
-// 	matrix_rotz_init(m, z);
-// 	translate_vector(v, -vx, -vy, 0);
-// 	multiply_vector_by_matrix(v, m, v);
-// 	translate_vector(v, vx, vy, 0);
-// }
 
 void		vector_rotate_xyz(t_xyz *v, float x, float y, float z)
 {

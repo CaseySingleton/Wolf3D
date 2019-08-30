@@ -63,11 +63,8 @@ void			line(t_image *image, t_xyz p1, t_xyz p2, int color)
 	pixel(image, swap ? p1.y : p1.x, swap ? p1.x : p1.y, color);
 }
 
-#include <stdio.h>
-
 void			lline(t_image *image, t_line l, int color)
 {
-	// printf("%f %f %f %f\n", l.p1.x, l.p1.y, l.p2.x, l.p2.y);
 	t_bresline	line;
 	int			swap;
 

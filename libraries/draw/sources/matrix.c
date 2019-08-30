@@ -22,7 +22,9 @@ void		matrix_clear(float matrix[4][4])
 	{
 		x = -1;
 		while (++x < 4)
+		{
 			matrix[y][x] = 0;
+		}
 	}
 }
 

@@ -102,6 +102,5 @@ int					ft_ascii_cmp(char *s1, char *s2);
 void				ft_sort_list_ascii(char ***lst, int start, int stop);
 void				ft_free_strsplit(char ***strings);
 char				*ft_strndup(const char *src, size_t n);
-char				**ft_strtok(char *content, int delim);
 
 #endif
