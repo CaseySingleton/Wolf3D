@@ -15,6 +15,7 @@
 
 # include <math.h>
 # include <stdio.h>
+# include <sys/time.h>
 # include <fcntl.h>
 # include <dirent.h>
 # include <pthread.h>

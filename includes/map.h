@@ -29,7 +29,7 @@ typedef struct 		s_map
 **	map.c
 */
 
-t_map				*map_init(void);
+t_map				*map_init(char *path);
 t_map				*get_map(char *path);
 
 /*

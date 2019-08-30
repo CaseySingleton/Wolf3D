@@ -37,6 +37,9 @@ int			handle_input(t_wolf *w)
 		ft_printf("Exiting Wolf3D\n");
 		free_map(w->map);
 		free_textures(w);
+		mlx_destroy_image(w->mlx_ptr, w->image[0]->ptr);
+		mlx_destroy_image(w->mlx_ptr, w->image[1]->ptr);
+		mlx_destroy_window(w->mlx_ptr, w->win_ptr);
 		exit(0);
 	}
 	if (k[KEY_R])

@@ -64,12 +64,14 @@ build/%.o: sources/%.c | build
 
 clean:
 	@rm -fr build
+	@make clean -C libraries/minilibx
 	@make clean -C libraries/libft
 	@make clean -C libraries/ft_printf
 	@make clean -C libraries/draw
 
 fclean: clean
 	@rm -f $(NAME)
+	@make clean -C libraries/minilibx
 	@make fclean -C libraries/libft
 	@make fclean -C libraries/ft_printf
 	@make fclean -C libraries/draw

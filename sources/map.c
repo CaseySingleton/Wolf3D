@@ -13,7 +13,7 @@
 #include "Wolf3D.h"
 #include "map.h"
 
-t_map			*map_init(void)
+t_map			*map_init(char *path)
 {
 	t_map		*map;
 
@@ -25,6 +25,7 @@ t_map			*map_init(void)
 	map->width = -1;
 	map->height = -1;
 	map->error = 0;
+	map->path = path;
 	return (map);
 }
 
@@ -82,8 +83,7 @@ t_map			*get_map(char *path)
 	char		*line;
 
 	fd = open_file(path);
-	map = map_init();
-	map->path = path;
+	map = map_init(path);
 	i = -1;
 	while (get_next_line(fd, &line) && map->error == 0)
 	{

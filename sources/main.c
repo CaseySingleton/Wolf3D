@@ -52,9 +52,9 @@ void			wolf_setup(char *file_path)
 	t_input		input;
 	t_player	player;
 
-	w.input = &input;
 	if (!(w.map = get_map(file_path)))
 		return ;
+	w.input = &input;
 	w.mlx_ptr = mlx_init();
 	w.win_ptr = mlx_new_window(w.mlx_ptr, WIDTH, HEIGHT, "RayCaster");
 	w.image[0] = new_image(w.mlx_ptr, WIDTH, HEIGHT);

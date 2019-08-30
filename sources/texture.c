@@ -69,7 +69,10 @@ void				load_all_textures(t_wolf *w)
 			texture_full_path = NULL;
 			i++;
 		}
+		closedir(dir);
 	}
+	else
+		ft_printf("Error: Directory: \'textures\' not found\n");
 }
 
 void				free_textures(t_wolf *w)
@@ -79,7 +82,7 @@ void				free_textures(t_wolf *w)
 	i = 0;
 	while (i < NUM_TEXTURES)
 	{
-		free(w->textures[i]);
+		mlx_destroy_image(w->mlx_ptr, w->textures[i]->ptr);
 		w->textures[i] = NULL;
 		i++;
 	}

@@ -19,26 +19,52 @@ static void		map_error(t_map **m)
 	*m = NULL;
 }
 
-t_map			*is_map_valid(t_map **m)
+void			map_has_empty_space(t_map *map)
+{
+	int			y;
+	int			x;
+
+	y = 0;
+	while (++y < map->height - 1)
+	{
+		x = 0;
+		while (++x < map->width - 1)
+		{
+			if (map->info[y][x] == 0)
+			{
+				return ;
+			}
+		}
+	}
+	map->error = 1;
+}
+
+void			map_has_border(t_map *m)
 {
 	int			i;
 
-	if ((*m)->error == 0)
+	if (m->error == 0)
 	{
 		i = -1;
-		while (++i < (*m)->height)
+		while (++i < m->height)
 		{
-			if ((*m)->info[i][0] < 1 || (*m)->info[i][(*m)->width - 1] < 1)
-				(*m)->error = 1;
+			if (m->info[i][0] < 1 || m->info[i][m->width - 1] < 1)
+				m->error = 1;
 		}
 		i = -1;
-		while (++i < (*m)->width)
+		while (++i < m->width)
 		{
-			if ((*m)->info[0][i] < 1 || (*m)->info[(*m)->height - 1][i] < 1)
-				(*m)->error = 1;
+			if (m->info[0][i] < 1 || m->info[m->height - 1][i] < 1)
+				m->error = 1;
 		}
 	}
-	if ((*m)->error == 1)
+}
+
+t_map			*is_map_valid(t_map **m)
+{
+	map_has_border(*m);
+	map_has_empty_space(*m);
+	if ((*m)->error == 1 || (*m)->height < 3 || (*m)->width < 3)
 		map_error(m);
 	return (*m);
 }
