@@ -1,5 +1,5 @@
 # Wolf3D
-Wolf 3D made using C and Ray Casting for rendering.
+Wolf3D inspired ray casting engine
 # To-do
 - Map files that specify which textures to use
 - Hashtable for textures
