@@ -1,6 +1,6 @@
 # Wolf3D
 Wolf 3D made using C and Ray Casting for rendering.
-#To-do
+# To-do
 - Map files that specify which textures to use
 - Hashtable for textures
 - Game timer so movement is consistent even with FPS drops
