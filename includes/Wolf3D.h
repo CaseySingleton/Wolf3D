@@ -6,7 +6,7 @@
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/23 17:32:19 by csinglet          #+#    #+#             */
-/*   Updated: 2019/02/23 17:32:20 by csinglet         ###   ########.fr       */
+/*   Updated: 2019/08/30 17:20:38 by csinglet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 # define CENTER_Y HEIGHT / 2
 
 # define WALL_COLOR 0xA3F4FF
-# define NUM_TEXTURES 3
+# define NUM_TEXTURES 6
 
 typedef struct		s_wolf
 {
