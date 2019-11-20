@@ -1,5 +1,5 @@
 # Wolf3D
-Wolf3D inspired ray casting engine
+A ray casting engine inspired by the 1992 hit game Wolfenstein 3D.
 # Installation
 1. Clone the repository
 2. Navagate to the repository using a terminal
