@@ -4,9 +4,13 @@ Wolf3D inspired ray casting engine
 1. Clone the repository
 2. Navagate to the repository using a terminal
 3. Type 'make' to create the executable
-4. Type './wolf3D ' to run the executable
+4. Usage: ./wolf3D maps/(map of your choice)
+# Features
+* Texture mapping
+* Multithreadding
+* Double buffering
+* Load changes to the current map in game by pressing the 'r' key
 # Pictures
-With textures, multithreading, double buffering, and you can load changes to the map by pressing 'r'
 ![](https://i.imgur.com/Zfj2kiD.png)
 First working version!
 ![](https://i.imgur.com/knFf2eX.png)
