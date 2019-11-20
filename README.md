@@ -3,8 +3,8 @@ Wolf3D inspired ray casting engine
 # Installation
 1. Clone the repository
 2. Navagate to the repository using a terminal
-3. Type 'make' to create the executable wolf3D
-4. Usage: ./wolf3D maps/(map of your choice)
+3. Type 'make' to create the Wolf3D executable
+4. Usage: ./Wolf3D maps/(map of your choice)
 # Features
 * Texture mapping
 * Multithreadding
