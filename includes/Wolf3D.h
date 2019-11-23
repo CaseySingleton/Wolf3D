@@ -30,8 +30,8 @@
 # include "mlx.h"
 # include "mlx_keys.h"
 
-# define WIDTH	1280
-# define HEIGHT	720
+# define WIDTH	900
+# define HEIGHT	600
 # define CENTER_X WIDTH / 2
 # define CENTER_Y HEIGHT / 2
 
