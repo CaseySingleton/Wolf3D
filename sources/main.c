@@ -12,6 +12,15 @@
 
 #include "Wolf3D.h"
 
+/*
+** Function: display
+** Draws the current buffered image to the window.
+**
+** p: A t_wolf structure taken in as a void pointer containing the image to be
+**    displayed on screen
+**
+** Return: A NULL pointer
+*/
 void			*display(void *p)
 {
 	t_wolf		*w;
@@ -24,6 +33,16 @@ void			*display(void *p)
 	return (NULL);
 }
 
+/*
+** Function: game_loop
+** Reads the users input, then creates two threads, one to render the next
+** image buffer given the users input, and another to display the previously
+** Rendered image.
+**
+** w: A t_wolf structure containing information about the game state
+**
+** return: 0 to indicate no errors
+*/
 int				game_loop(t_wolf *w)
 {
 	pthread_t	threads[3];
@@ -37,6 +56,15 @@ int				game_loop(t_wolf *w)
 	return (0);
 }
 
+/*
+** Function: set_hooks
+** Sets the functions to be associated with keyboard and mouse events. Sets the
+** function game_loop as the primary looping function.
+**
+** w: A t_wolf structure containing information about the game state
+**
+** Return: None
+*/
 void			set_hooks(t_wolf *w)
 {
 	mlx_do_key_autorepeatoff(w->mlx_ptr);
@@ -46,6 +74,14 @@ void			set_hooks(t_wolf *w)
 	mlx_loop_hook(w->mlx_ptr, game_loop, w);
 }
 
+/*
+** Function: wolf_setup
+** Initializes structures, the window, and the images to be displayed.
+**
+** file_path: A file path to the desired game map
+**
+** Return: None
+*/
 void			wolf_setup(char *file_path)
 {
 	t_wolf		w;
