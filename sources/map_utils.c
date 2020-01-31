@@ -12,6 +12,15 @@
 
 #include "Wolf3D.h"
 
+/*
+** Function: map_error
+** If an error while reading the map occures, map_error is called to free any
+** allocated memory.
+**
+** m: A t_map structure containing information about the current map.
+**
+** Return: None
+*/
 static void		map_error(t_map **m)
 {
 	ft_printf("Error: Map is invalid\n");
@@ -19,6 +28,15 @@ static void		map_error(t_map **m)
 	*m = NULL;
 }
 
+/*
+** Function: map_has_empty_space
+** Checks the given map to see if any empty spaces are found. If an empty space
+** is present, the map->error variable is set to 1.
+**
+** m: A t_map structure containing information about the current map.
+**
+** Return: None
+*/
 void			map_has_empty_space(t_map *map)
 {
 	int			y;
@@ -39,6 +57,15 @@ void			map_has_empty_space(t_map *map)
 	map->error = 1;
 }
 
+/*
+** Function: map_has_border
+** Checks the perimeter of the given map to ensure that the map is enclosed. If
+** the map is not enclosed, the map->error variable is set to 1.
+**
+** m: A t_map structure containing information about the current map.
+**
+** Return: None
+*/
 void			map_has_border(t_map *m)
 {
 	int			i;
@@ -60,6 +87,15 @@ void			map_has_border(t_map *m)
 	}
 }
 
+/*
+** Function: is_map_valid
+** Checks the border and body of the map for errors and validates that the map
+** meets the minimum size requirements.
+**
+** m: A t_map structure containing information about the current map.
+**
+** Return: A t_map structure containing information about the current map.
+*/
 t_map			*is_map_valid(t_map **m)
 {
 	map_has_border(*m);
@@ -69,6 +105,15 @@ t_map			*is_map_valid(t_map **m)
 	return (*m);
 }
 
+/*
+** Function: free_map
+** Frees all memory associated with the t_map structure and sets all memory to
+** NULL.
+**
+** m: A t_map structure containing information about the current map.
+**
+** Return: None
+*/
 void			free_map(t_map *m)
 {
 	int			y;
