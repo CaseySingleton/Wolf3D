@@ -41,7 +41,7 @@ void			*display(void *p)
 **
 ** w: A t_wolf structure containing information about the game state
 **
-** return: 0 to indicate no errors
+** Return: Integer to indicate a safe return
 */
 int				game_loop(t_wolf *w)
 {

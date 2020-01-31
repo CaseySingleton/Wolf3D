@@ -12,6 +12,15 @@
 
 #include "Wolf3D.h"
 
+/*
+** Function: reload_map
+** Reloads the current map file. This is used so that changes to the map can be
+** loaded without restarting.
+**
+** w: A t_wolf structure containing information about the game state
+**
+** Return: None
+*/
 static void	reload_map(t_wolf *w)
 {
 	t_map	*temp;
@@ -27,6 +36,15 @@ static void	reload_map(t_wolf *w)
 		ft_printf("Using last working version of map: \n", w->map->name);
 }
 
+/*
+** Function: handle_input
+** Checks for user input and performes the appropriate tasks. Handles player
+** movement, map reloading, and closing of the program.
+**
+** w: A t_wolf structure containing information about the game state
+**
+** Return: Integer to indicate a safe return
+*/
 int			handle_input(t_wolf *w)
 {
 	char	*k;
@@ -50,12 +68,34 @@ int			handle_input(t_wolf *w)
 	return (0);
 }
 
+/*
+** Function: toggle_key
+** On the event that a keyboard key is pressed, toggles the keys state in the
+** keys buffer.
+**
+** key: The pressed key
+** w: A t_wolf structure containing information about the game state
+**
+** Return: Integer to indicate a safe return
+*/
 int			toggle_key(int key, t_wolf *w)
 {
 	w->input->keys[key] ^= 1;
 	return (0);
 }
 
+/*
+** Function: toggle_mouse_key
+** On the event that the mouse left click is pressed, toggles the mouse left
+** click state from 1 to 0 or 0 to 1.
+**
+** key: The pressed mouse key
+** x: The x position of the mouse cursor
+** y: The y position of the mouse cursor
+** w: A t_wolf structure containing information about the game state
+**
+** Return: Integer to indicate a safe return
+*/
 int			toggle_mouse_key(int key, int x, int y, t_wolf *w)
 {
 	w->input->mouse_key ^= 1;
@@ -64,6 +104,17 @@ int			toggle_mouse_key(int key, int x, int y, t_wolf *w)
 	return (0);
 }
 
+/*
+** Function: mouse_motion
+** On the event that the mouse is moved, the saved x and y coordinates of the
+** mouse cursor are saved.
+**
+** x: The x position of the mouse cursor
+** y: The y position of the mouse cursor
+** w: A t_wolf structure containing information about the game state
+**
+** Return: Integer to indicate a safe return
+*/
 int			mouse_motion(int x, int y, t_wolf *w)
 {
 	w->input->mouse_x = x;
