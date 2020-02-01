@@ -47,6 +47,8 @@ void			set_player_position(t_wolf *w)
 **
 ** player: A t_player structure containing information about the players
 **         position.
+**
+** Return: None
 */
 void			player_init(t_player *player)
 {
