@@ -17,7 +17,7 @@
 ** If an error while reading the map occures, map_error is called to free any
 ** allocated memory.
 **
-** m: A t_map structure containing information about the current map.
+** m: A t_map structure containing information about the current map
 **
 ** Return: None
 */
@@ -33,7 +33,7 @@ static void		map_error(t_map **m)
 ** Checks the given map to see if any empty spaces are found. If an empty space
 ** is present, the map->error variable is set to 1.
 **
-** m: A t_map structure containing information about the current map.
+** m: A t_map structure containing information about the current map
 **
 ** Return: None
 */
@@ -62,7 +62,7 @@ void			map_has_empty_space(t_map *map)
 ** Checks the perimeter of the given map to ensure that the map is enclosed. If
 ** the map is not enclosed, the map->error variable is set to 1.
 **
-** m: A t_map structure containing information about the current map.
+** m: A t_map structure containing information about the current map
 **
 ** Return: None
 */
@@ -92,9 +92,9 @@ void			map_has_border(t_map *m)
 ** Checks the border and body of the map for errors and validates that the map
 ** meets the minimum size requirements.
 **
-** m: A t_map structure containing information about the current map.
+** m: A t_map structure containing information about the current map
 **
-** Return: A t_map structure containing information about the current map.
+** Return: A t_map structure containing information about the current map
 */
 t_map			*is_map_valid(t_map **m)
 {
@@ -110,7 +110,7 @@ t_map			*is_map_valid(t_map **m)
 ** Frees all memory associated with the t_map structure and sets all memory to
 ** NULL.
 **
-** m: A t_map structure containing information about the current map.
+** m: A t_map structure containing information about the current map
 **
 ** Return: None
 */
