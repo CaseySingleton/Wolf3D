@@ -12,6 +12,16 @@
 
 #include "Wolf3D.h"
 
+/*
+** Function: render_threading
+** Creates multiple threads in which to render the current image. render_scene
+** is then called on each thread to increase rendering speed.
+**
+** p: A t_wolf structure taken in as a void pointer to satisfy multi-threading
+**    function requirements.
+**
+** Return: A NULL pointer
+*/
 void			*render_threading(void *p)
 {
 	int			i;
