@@ -12,6 +12,16 @@
 
 #include "Wolf3D.h"
 
+/*
+** Function: shader
+** Darkens the color of pixels based on the distance of an object from the
+** player.
+**
+** distance: The distance of an object from the player
+** color: The desired color of a pixel
+**
+** Returns: Integer representing the shaded color of a pixel
+*/
 int					shader(float distance, int color)
 {
 	int				new_color;
@@ -33,6 +43,15 @@ int					shader(float distance, int color)
 	return (new_color);
 }
 
+/*
+** Function: load_texture
+** Opens a texture file and converts from XPM format to an int[][]
+**
+** texture_path: The path to the texture file
+** w: A t_wolf structure containing information about the game state
+**
+** Return: t_image structure containing the texture information
+*/
 t_image				*load_texture(char *texture_path, t_wolf *w)
 {
 	t_image			*img;
@@ -49,6 +68,15 @@ t_image				*load_texture(char *texture_path, t_wolf *w)
 	return (img);
 }
 
+/*
+** Function: load_all_textures
+** Opens and processes all texture files located in the texture directory. If
+** there is no texture directory an error is displayed.
+**
+** w: A t_wolf structure containing information about the game state
+**
+** Return: None
+*/
 void				load_all_textures(t_wolf *w)
 {
 	int				i;
@@ -75,6 +103,14 @@ void				load_all_textures(t_wolf *w)
 		ft_printf("Error: Directory: \'textures\' not found\n");
 }
 
+/*
+** Function: free_textures
+** Frees all allocated memory associated with textures.
+**
+** w: A t_wolf structure containing information about the game state
+**
+** Return: None
+*/
 void				free_textures(t_wolf *w)
 {
 	int				i;
