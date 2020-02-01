@@ -12,6 +12,14 @@
 
 #include "Wolf3D.h"
 
+/*
+** Function: set_player_position
+** Sets the player coordinates to the first open position found in the map.
+**
+** w: A t_wolf structure containing information about the game state
+**
+** Return: None
+*/
 void			set_player_position(t_wolf *w)
 {
 	int			y;
@@ -33,6 +41,13 @@ void			set_player_position(t_wolf *w)
 	}
 }
 
+/*
+** Function: player_init
+** Initializes all of the values in the t_player structure to default values.
+**
+** player: A t_player structure containing information about the players
+**         position.
+*/
 void			player_init(t_player *player)
 {
 	player->where.x = 0;
