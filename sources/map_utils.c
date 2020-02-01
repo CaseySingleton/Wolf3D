@@ -31,7 +31,8 @@ static void		map_error(t_map **m)
 /*
 ** Function: map_has_empty_space
 ** Checks the given map to see if any empty spaces are found. If an empty space
-** is present, the map->error variable is set to 1.
+** is not present, the map->error variable is set to 1. Empty spaces are needed
+** so that the player can be placed on the map.
 **
 ** m: A t_map structure containing information about the current map
 **
