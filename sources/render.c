@@ -12,6 +12,27 @@
 
 #include "Wolf3D.h"
 
+/*
+** Note: Normally a rendering function is not seperated this much. This was
+** due to the project requirement that function bodies could not exceed 25
+** lines.
+** https://en.wikipedia.org/wiki/Digital_differential_analyzer_(graphics_algorithm)
+** The above link is a reference on how a DDA algorithm works. To explain in
+** comments alone would be an arduous task.
+*/
+
+/*
+** Function: init_variables
+** Initializes the values in the t_ray_vars structure based on the players
+** position found in the t_wolf structure. This is used for every ray created
+** by the render_scene function.
+**
+** w: A t_wolf structure containing information about the game state
+** v: A t_ray_vars structure representing the current ray being used to trace
+**    the map.
+**
+** Return: None
+*/
 static void		init_variables(t_wolf *w, t_ray_vars *v)
 {
 	v->camera_x = 2 * v->x / (float)WIDTH - 1;
@@ -24,6 +45,17 @@ static void		init_variables(t_wolf *w, t_ray_vars *v)
 	v->hit = 0;
 }
 
+/*
+** Function: determine_step_direction
+** Determines the step direction of the current ray. The step can be in either
+** the +-X or +-Y direction.
+**
+** w: A t_wolf structure containing information about the game state
+** v: A t_ray_vars structure representing the current ray being used to trace
+**    the map.
+**
+** Return: None
+*/
 static void		determine_step_direction(t_wolf *w, t_ray_vars *v)
 {
 	if (v->dir_x < 0)
@@ -48,6 +80,18 @@ static void		determine_step_direction(t_wolf *w, t_ray_vars *v)
 	}
 }
 
+/*
+** Function: dda
+** The main portion the DDA algorithm. Finds the collision point between a ray
+** and a wall in the map. After a hit is found the side hit by the ray is
+** determined.
+**
+** w: A t_wolf structure containing information about the game state
+** v: A t_ray_vars structure representing the current ray being used to trace
+**    the map.
+**
+** Return: None
+*/
 static void		dda(t_wolf *w, t_ray_vars *v)
 {
 	while (v->hit == 0)
@@ -75,6 +119,17 @@ static void		dda(t_wolf *w, t_ray_vars *v)
 			/ 2) / v->dir_y;
 }
 
+/*
+** Function: draw_wall
+** Draws a vertical line given a start and stop point. This line is the vertical
+** row of pixels representing a slice of the visible wall.
+**
+** w: A t_wolf structure containing information about the game state
+** v: A t_ray_vars structure representing the current ray being used to trace
+**    the map.
+**
+** Return: None
+*/
 static void		draw_wall(t_wolf *w, t_ray_vars *v)
 {
 	float		wall_x;
@@ -102,6 +157,15 @@ static void		draw_wall(t_wolf *w, t_ray_vars *v)
 	}
 }
 
+/*
+** Function: render_scene
+** For the width of the game window in pixels, render_scene draws the vertical
+** lines used to represent the ceiling, wall, and floor visible by the player.
+**
+** info: A void pointer containing a t_wolf structure and t_ray_vars structure
+**
+** Return: NULL pointer
+*/
 void			*render_scene(void *info)
 {
 	t_wolf		*w;
@@ -121,8 +185,10 @@ void			*render_scene(void *info)
 			v.line_start = 0;
 		if (v.line_end > HEIGHT)
 			v.line_end = HEIGHT;
+		// Draws the ceiling
 		line(w->image[w->front], (t_xyz){v.x, v.line_start, 0},
 			(t_xyz){v.x, 0, 0}, 0x9edbde);
+		// Draws the floor
 		line(w->image[w->front], (t_xyz){v.x, v.line_end, 0},
 			(t_xyz){v.x, HEIGHT, 0}, 0x2b2b2b);
 		draw_wall(w, &v);
