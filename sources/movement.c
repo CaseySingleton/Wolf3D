@@ -12,6 +12,15 @@
 
 #include "Wolf3D.h"
 
+/*
+** Function: player_movement
+** Calculates and applies the forward and backward movement of the player.
+** If a movement were to place a player out of bounds, no movement is applied.
+**
+** w: A t_wolf structure containing information about the game state.
+**
+** Return: None
+*/
 void		player_movement(t_wolf *w)
 {
 	char	*k;
@@ -36,6 +45,15 @@ void		player_movement(t_wolf *w)
 	}
 }
 
+/*
+** Function: player_straifing
+** Calculates and applies the left and right movement of the player. If a
+** movement were to place a player out of bounds, no movement is applied.
+**
+** w: A t_wolf structure containing information about the game state.
+**
+** Return: None
+*/
 void		player_strafing(t_wolf *w)
 {
 	char	*k;
@@ -60,6 +78,14 @@ void		player_strafing(t_wolf *w)
 	}
 }
 
+/*
+** Function: player_rotation
+** Calculates and applies the players rotation along the Y axis.
+**
+** w: A t_wolf structure containing information about the game state.
+**
+** Return: None
+*/
 void		player_rotation(t_wolf *w)
 {
 	char	*k;
